@@ -327,28 +327,50 @@ export default function App() {
         )}
       </header>
 
-      {/* ===== Hero（已修复：文字兜底 + 层级） ===== */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-100 via-white to-white" />
-        <div className="max-w-6xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center">
-          <div className="relative z-10 min-h-[220px]">
-            <h1 className="text-3xl md:text-5xl font-extrabold leading-tight text-gray-900">
-              {t?.brand?.tagline ?? (lang === "zh" ? "一站式国际物流与供应链服务" : "One-stop International Logistics and Supply Chain")}
-            </h1>
-            <p className="mt-4 text-gray-600 md:text-lg">
-              {t?.brand?.sub ?? (lang === "zh" ? "海运 · 陆运 · 报关 · 供应链方案" : "Ocean Freight · Trucking · Customs · Supply Chain")}
-            </p>
-            <div className="mt-6 flex items-center gap-3">
-              <Button className="rounded-2xl px-6" onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>{t.hero.primary}</Button>
-              <Button variant="outline" className="rounded-2xl px-6" onClick={exportProfilePDF}>{t.hero.pdf ?? (lang==="zh"?"下载公司介绍(PDF)":"Download Company Profile (PDF)")}</Button>
-            </div>
-          </div>
-          <div className="relative">
-            <div className="aspect-[5/4] rounded-3xl bg-gradient-to-br from-gray-900 to-gray-700" />
-            <div className="absolute inset-4 rounded-3xl border-4 border-white shadow-2xl bg-[url('https://images.unsplash.com/photo-1544989164-31dc3c645987?q=80&w=1400&auto=format&fit=crop')] bg-cover bg-center" />
-          </div>
-        </div>
-      </section>
+{/* ===== Hero（修复 PDF 缺图） ===== */}
+<section className="relative overflow-hidden">
+  {/* 背景渐变，确保在最底层 */}
+  <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-100 via-white to-white" />
+
+  <div className="max-w-6xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center">
+    {/* 左侧文字 */}
+    <div className="relative z-10 min-h-[220px]">
+      <h1 className="text-3xl md:text-5xl font-extrabold leading-tight text-gray-900">
+        {t?.brand?.tagline ?? (lang === "zh" ? "一站式国际物流与供应链服务" : "One-stop International Logistics and Supply Chain")}
+      </h1>
+      <p className="mt-4 text-gray-600 md:text-lg">
+        {t?.brand?.sub ?? (lang === "zh" ? "海运 · 陆运 · 报关 · 供应链方案" : "Ocean Freight · Trucking · Customs · Supply Chain")}
+      </p>
+
+      <div className="mt-6 flex items-center gap-3">
+        <Button
+          className="rounded-2xl px-6"
+          onClick={() =>
+            document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
+          }
+        >
+          {t.hero.primary}
+        </Button>
+        <Button variant="outline" className="rounded-2xl px-6" onClick={exportProfilePDF}>
+          {t.hero.pdf ?? (lang === "zh" ? "下载公司介绍(PDF)" : "Download Company Profile (PDF)")}
+        </Button>
+      </div>
+    </div>
+
+    {/* 右侧图片 (img 标签保证 PDF 正常显示) */}
+    <div className="relative">
+      <div className="aspect-[5/4] rounded-3xl bg-gradient-to-br from-gray-900 to-gray-700" />
+      <div className="absolute inset-4 rounded-3xl border-4 border-white shadow-2xl overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1544989164-31dc3c645987?q=80&w=1400&auto=format&fit=crop"
+          alt="Logistics background"
+          className="w-full h-full object-cover"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
 
       {/* 关于我们 + 服务 */}
       <section id="about" className="max-w-6xl mx-auto px-4 py-16 md:py-20">
@@ -506,5 +528,6 @@ export default function App() {
     </div>
   );
 }
+
 
 
