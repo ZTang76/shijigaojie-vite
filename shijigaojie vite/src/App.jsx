@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 
-// ===== UI 基础组件（轻量版） =====
+/* ===== 轻量 UI 组件 ===== */
 const Button = ({ variant, className = "", children, ...props }) => (
   <button
     className={`inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-2xl transition border ${
@@ -19,19 +19,17 @@ const Card = ({ className = "", children }) => (
     {children}
   </div>
 );
-
 const CardHeader = ({ className = "", children }) => (
   <div className={`p-4 ${className}`}>{children}</div>
 );
-
 const CardContent = ({ className = "", children }) => (
   <div className={`p-4 pt-0 ${className}`}>{children}</div>
 );
-
 const CardTitle = ({ className = "", children }) => (
   <h3 className={`font-semibold ${className}`}>{children}</h3>
 );
-// ===== 简单图标组件 =====
+
+/* ===== 图标 ===== */
 const Icon = ({ name, className = "h-5 w-5" }) => {
   const common = {
     className,
@@ -87,13 +85,13 @@ const Icon = ({ name, className = "h-5 w-5" }) => {
   }
 };
 
-// ===== 多语言文本 =====
+/* ===== 多语言文本 ===== */
 const i18n = {
   zh: {
     nav: { about: "关于我们", services: "服务", advantages: "优势", contact: "联系" },
     brand: {
       nameZh: "武汉世纪高捷国际货运代理有限公司",
-      nameEn: "shijigaojie", // 中文界面小字用拼音
+      nameEn: "shijigaojie",
       tagline: "一站式国际物流与供应链服务",
       sub: "海运 · 陆运 · 报关 · 供应链方案",
     },
@@ -165,14 +163,8 @@ const i18n = {
     langSwitch: "EN",
   },
 
-  // ========== 英文版 ==========
   en: {
-    nav: {
-      about: "About",
-      services: "Services",
-      advantages: "Advantages",
-      contact: "Contact",
-    },
+    nav: { about: "About", services: "Services", advantages: "Advantages", contact: "Contact" },
     brand: {
       nameZh: "Wuhan Century Gaojie International Freight Forwarding Co., Ltd.",
       nameEn: "Wuhan Century Gaojie International Freight Forwarding Co., Ltd.",
@@ -248,36 +240,31 @@ const i18n = {
     langSwitch: "中文",
   },
 };
-// ===== 表单端点 (Formspree) =====
-const FORM_ENDPOINT = "https://formspree.io/f/xyzdywge";
 
-// ===== 导出 PDF =====
-function exportProfilePDF() {
-  window.print();
-}
+/* ===== 表单端点 + PDF ===== */
+const FORM_ENDPOINT = "https://formspree.io/f/xyzdywge";
+const exportProfilePDF = () => window.print();
 
 export default function App() {
   const [lang, setLang] = useState("zh");
   const t = useMemo(() => i18n[lang], [lang]);
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [body, setBody] = useState("");
   const [contact, setContact] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [hp, setHp] = useState(""); // honeypot
+  const [hp, setHp] = useState("");
   const [notice, setNotice] = useState({ open: false, ok: true, msg: "" });
 
   async function onSubmit(e) {
     e.preventDefault();
-    if (hp) return; // 反机器人：如果 honeypot 填了就丢弃
+    if (hp) return;
     const payload = { message: body, contact, lang, _gotcha: hp };
     try {
       setSubmitting(true);
       const res = await fetch(FORM_ENDPOINT, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error("Form submit failed");
@@ -291,9 +278,10 @@ export default function App() {
       setSubmitting(false);
     }
   }
+
   return (
     <div className="min-h-screen bg-white text-gray-900">
-      {/* ===== 顶部导航 ===== */}
+      {/* 顶部导航 */}
       <header className="sticky top-0 z-40 backdrop-blur bg-white/70 border-b border-gray-100 print:hidden">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -305,160 +293,54 @@ export default function App() {
               <div className="text-xs text-gray-500">{t.brand.nameEn}</div>
             </div>
           </div>
+
           <nav className="hidden md:flex items-center gap-6 text-sm">
-            <button
-              onClick={() =>
-                document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })
-              }
-              className="hover:text-gray-600"
-            >
-              {t.nav.about}
-            </button>
-            <button
-              onClick={() =>
-                document.getElementById("services")?.scrollIntoView({ behavior: "smooth" })
-              }
-              className="hover:text-gray-600"
-            >
-              {t.nav.services}
-            </button>
-            <button
-              onClick={() =>
-                document.getElementById("advantages")?.scrollIntoView({ behavior: "smooth" })
-              }
-              className="hover:text-gray-600"
-            >
-              {t.nav.advantages}
-            </button>
-            <button
-              onClick={() =>
-                document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
-              }
-              className="hover:text-gray-600"
-            >
-              {t.nav.contact}
-            </button>
-            <Button onClick={exportProfilePDF} className="rounded-2xl" variant="outline">
-              {t.hero.pdf}
-            </Button>
-            <Button
-              className="rounded-2xl"
-              onClick={() =>
-                document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
-              }
-            >
-              {t.hero.primary}
-            </Button>
-            <button
-              className="ml-2 text-xs border rounded-xl px-2 py-1"
-              onClick={() => setLang(lang === "zh" ? "en" : "zh")}
-              aria-label="lang"
-            >
-              {t.langSwitch}
-            </button>
+            <button onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}>{t.nav.about}</button>
+            <button onClick={() => document.getElementById("services")?.scrollIntoView({ behavior: "smooth" })}>{t.nav.services}</button>
+            <button onClick={() => document.getElementById("advantages")?.scrollIntoView({ behavior: "smooth" })}>{t.nav.advantages}</button>
+            <button onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>{t.nav.contact}</button>
+            <Button onClick={exportProfilePDF} variant="outline">{t.hero.pdf}</Button>
+            <Button onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>{t.hero.primary}</Button>
+            <button className="ml-2 text-xs border rounded-xl px-2 py-1" onClick={() => setLang(lang === "zh" ? "en" : "zh")}>{t.langSwitch}</button>
           </nav>
+
           <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)} aria-label="menu">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
           </button>
         </div>
+
         {menuOpen && (
           <div className="md:hidden border-t bg-white">
             <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-3 text-sm">
-              <button
-                onClick={() => {
-                  setMenuOpen(false);
-                  document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
-                }}
-              >
-                {t.nav.about}
-              </button>
-              <button
-                onClick={() => {
-                  setMenuOpen(false);
-                  document.getElementById("services")?.scrollIntoView({ behavior: "smooth" });
-                }}
-              >
-                {t.nav.services}
-              </button>
-              <button
-                onClick={() => {
-                  setMenuOpen(false);
-                  document.getElementById("advantages")?.scrollIntoView({ behavior: "smooth" });
-                }}
-              >
-                {t.nav.advantages}
-              </button>
-              <button
-                onClick={() => {
-                  setMenuOpen(false);
-                  document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-                }}
-              >
-                {t.nav.contact}
-              </button>
+              {["about","services","advantages","contact"].map((id,i)=>(
+                <button key={i} onClick={()=>{setMenuOpen(false);document.getElementById(id)?.scrollIntoView({behavior:"smooth"});}}>
+                  {t.nav[id]}
+                </button>
+              ))}
               <div className="flex gap-2">
-                <Button
-                  className="rounded-2xl flex-1"
-                  variant="outline"
-                  onClick={exportProfilePDF}
-                >
-                  {t.hero.pdf}
-                </Button>
-                <Button
-                  className="rounded-2xl flex-1"
-                  onClick={() => {
-                    setMenuOpen(false);
-                    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                >
-                  {t.hero.primary}
-                </Button>
+                <Button className="rounded-2xl flex-1" variant="outline" onClick={exportProfilePDF}>{t.hero.pdf}</Button>
+                <Button className="rounded-2xl flex-1" onClick={()=>{setMenuOpen(false);document.getElementById("contact")?.scrollIntoView({behavior:"smooth"});}}>{t.hero.primary}</Button>
               </div>
-              <button
-                className="text-xs border rounded-xl px-2 py-1 w-min"
-                onClick={() => setLang(lang === "zh" ? "en" : "zh")}
-              >
-                {t.langSwitch}
-              </button>
+              <button className="text-xs border rounded-xl px-2 py-1 w-min" onClick={()=>setLang(lang==="zh"?"en":"zh")}>{t.langSwitch}</button>
             </div>
           </div>
         )}
       </header>
 
-      {/* ===== Hero 区域 ===== */}
+      {/* ===== Hero（已修复：文字兜底 + 层级） ===== */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-100 via-white to-white" />
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-100 via-white to-white" />
         <div className="max-w-6xl mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center">
-          <div>
-            <h1 className="text-3xl md:text-5xl font-extrabold leading-tight">
-              {t.brand.tagline}
+          <div className="relative z-10 min-h-[220px]">
+            <h1 className="text-3xl md:text-5xl font-extrabold leading-tight text-gray-900">
+              {t?.brand?.tagline ?? (lang === "zh" ? "一站式国际物流与供应链服务" : "One-stop International Logistics and Supply Chain")}
             </h1>
-            <p className="mt-4 text-gray-600 md:text-lg">{t.brand.sub}</p>
+            <p className="mt-4 text-gray-600 md:text-lg">
+              {t?.brand?.sub ?? (lang === "zh" ? "海运 · 陆运 · 报关 · 供应链方案" : "Ocean Freight · Trucking · Customs · Supply Chain")}
+            </p>
             <div className="mt-6 flex items-center gap-3">
-              <Button
-                className="rounded-2xl px-6"
-                onClick={() =>
-                  document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
-                }
-              >
-                {t.hero.primary}
-              </Button>
-              <Button
-                variant="outline"
-                className="rounded-2xl px-6"
-                onClick={exportProfilePDF}
-              >
-                {t.hero.pdf}
-              </Button>
+              <Button className="rounded-2xl px-6" onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>{t.hero.primary}</Button>
+              <Button variant="outline" className="rounded-2xl px-6" onClick={exportProfilePDF}>{t.hero.pdf ?? (lang==="zh"?"下载公司介绍(PDF)":"Download Company Profile (PDF)")}</Button>
             </div>
           </div>
           <div className="relative">
@@ -467,7 +349,8 @@ export default function App() {
           </div>
         </div>
       </section>
-      {/* ===== 关于我们 ===== */}
+
+      {/* 关于我们 + 服务 */}
       <section id="about" className="max-w-6xl mx-auto px-4 py-16 md:py-20">
         <div className="grid md:grid-cols-2 gap-10 items-start">
           <div>
@@ -500,7 +383,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* ===== 管理团队 ===== */}
+      {/* 管理团队 */}
       <section id="gm" className="max-w-6xl mx-auto px-4 py-16 md:py-20">
         <h2 className="text-2xl md:text-3xl font-bold">{t.gm.title}</h2>
         <Card className="mt-6">
@@ -511,7 +394,7 @@ export default function App() {
         </Card>
       </section>
 
-      {/* ===== 优势 ===== */}
+      {/* 优势 */}
       <section id="advantages" className="max-w-6xl mx-auto px-4 py-16 md:py-20">
         <h2 className="text-2xl md:text-3xl font-bold">{t.advantages.title}</h2>
         <div className="mt-8 grid md:grid-cols-3 gap-4">
@@ -531,7 +414,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* ===== 联系我们 ===== */}
+      {/* 联系我们 */}
       <section id="contact" className="bg-gray-900 text-white">
         <div className="max-w-6xl mx-auto px-4 py-16 md:py-20 grid md:grid-cols-2 gap-10">
           <div>
@@ -544,7 +427,7 @@ export default function App() {
             </CardHeader>
             <CardContent>
               <form className="space-y-3" onSubmit={onSubmit}>
-                {/* Honeypot 隐藏字段 */}
+                {/* honeypot 反机器人 */}
                 <input
                   type="text"
                   name="_gotcha"
@@ -579,7 +462,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* ===== 页脚 ===== */}
+      {/* 页脚 */}
       <footer className="bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 py-8 text-sm text-gray-600 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-6 justify-between">
           <div className="flex items-center gap-2">
@@ -592,7 +475,7 @@ export default function App() {
         </div>
       </footer>
 
-      {/* ===== 打印导出只保留 About + GM ===== */}
+      {/* 打印导出仅保留 About + GM */}
       <style>{`
         @media print {
           header, #advantages, #contact, footer { display: none; }
@@ -601,7 +484,7 @@ export default function App() {
         }
       `}</style>
 
-      {/* ===== Toast 提示 ===== */}
+      {/* Toast */}
       {notice.open && (
         <div
           role="alert"
@@ -623,3 +506,5 @@ export default function App() {
     </div>
   );
 }
+
+
